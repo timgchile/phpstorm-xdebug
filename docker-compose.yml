@@ -19,7 +19,7 @@ services:
       context: .
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`api.me.com`)"
+      - "traefik.http.routers.api.rule=Host(`api.me.com`) && PathPrefix(`/healthcheck`)"
       - "traefik.http.routers.api.entrypoints=websecure"
       - "traefik.http.routers.api.tls=true"
       - "traefik.http.services.api.loadbalancer.server.port=80"

@@ -17,9 +17,12 @@
     "symfony/monolog-bundle": "^3.3",
     "symfony/runtime": "^5.3",
     "symfony/security-bundle": "^5.3",
-    "symfony/validator": "^5.3"
+    "symfony/validator": "^5.3",
+    "friends-of-behat/symfony-extension": "^2.2",
+    "guzzlehttp/guzzle": "^7.3"
   },
   "require-dev": {
+    "behat/behat": "^v3.8",
     "roave/security-advisories": "dev-latest"
   },
   "config": {
@@ -51,7 +54,7 @@
   },
   "scripts": {
     "server:start": "./vendor/bin/ppm start --bootstrap=symfony --host=0.0.0.0 --port=80 --app-env=prod --workers=1 --debug=0 --logging=1",
-    "server:start:dev": "./vendor/bin/ppm start --bootstrap=symfony --host=0.0.0.0 --port=80 --app-env=dev --workers=1 --max-execution-time=180 --debug=1 --logging=1 -vvv > ./var/log/php-pm.log &",
+    "server:start:dev": "composer install && ./vendor/bin/ppm start --bootstrap=symfony --host=0.0.0.0 --port=80 --app-env=dev --workers=1 --max-execution-time=180 --debug=1 --logging=1 -vvv > ./var/log/php-pm.log &",
     "server:stop": "./vendor/bin/ppm stop",
     "server:restart": [
       "@server:stop",
@@ -61,7 +64,7 @@
       "@server:stop",
       "@server:start:dev"
     ],
-    "test": "PHP_IDE_CONFIG=serverName=api XDEBUG_SESSION=1 curl -k https://api.me.com/healthcheck",
+    "behatx": "PHP_IDE_CONFIG=serverName=api XDEBUG_SESSION=1 APP_ENV=dev ./vendor/bin/behat --suite=default --format=progress",
     "auto-scripts": {
       "cache:clear": "symfony-cmd",
       "assets:install %PUBLIC_DIR%": "symfony-cmd"

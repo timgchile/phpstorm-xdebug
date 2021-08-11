@@ -1,0 +1,12 @@
+default:
+  suites:
+    default:
+      contexts:
+        - Behat\Behat\Context\DotenvContext
+        - Behat\Behat\Context\RequestContext
+        - Behat\Behat\Context\ResponseContext
+  extensions:
+    FriendsOfBehat\SymfonyExtension:
+      kernel:
+        class: App\Kernel
+        environment: dev

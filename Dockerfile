@@ -13,27 +13,18 @@ WORKDIR /var/www
 RUN apt-get update \
   && apt-get dist-upgrade -y \
   && apt-get install --no-install-recommends -y apt-utils \
-  && apt-get install --no-install-recommends -y htop nano curl git zip unzip findutils wget procps wkhtmltopdf \
+  && apt-get install --no-install-recommends -y nano curl git zip unzip findutils wget procps \
   libfreetype6-dev libjpeg62-turbo-dev libpng-dev pkg-config libssl-dev libcurl4-openssl-dev zlib1g-dev libxslt-dev \
   libicu-dev g++ libxml2-dev libpcre3-dev libzip-dev libsodium-dev libonig-dev gpg gpg-agent \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && docker-php-ext-install -j$(nproc) gd pcntl iconv curl intl xml xsl mbstring bcmath sodium sockets opcache soap zip \
   && pecl channel-update pecl.php.net \
-  && pecl install -of mongodb redis ast apcu \
-  && docker-php-ext-enable mongodb opcache redis sockets ast apcu \
+  && pecl install -of xdebug ast apcu \
+  && docker-php-ext-enable opcache sockets ast apcu xdebug \
   && rm -rf /tmp/* \
   && apt-get autoremove -y \
   && apt-get autoclean
-
-RUN version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
-  && architecture=$(case $(uname -m) in i386 | i686 | x86) echo "i386" ;; x86_64 | amd64) echo "amd64" ;; aarch64 | arm64 | armv8) echo "arm64" ;; *) echo "amd64" ;; esac) \
-  && curl -A "Docker" -o /tmp/blackfire-probe.tar.gz -D - -L -s https://blackfire.io/api/v1/releases/probe/php/linux/$architecture/$version \
-  && mkdir -p /tmp/blackfire \
-  && tar zxpf /tmp/blackfire-probe.tar.gz -C /tmp/blackfire \
-  && mv /tmp/blackfire/blackfire-*.so $(php -r "echo ini_get ('extension_dir');")/blackfire.so \
-  && printf "extension=blackfire.so\nblackfire.agent_socket=tcp://blackfire:8707\n" > ${PHP_INI_DIR}/conf.d/blackfire.ini \
-  && rm -rf /tmp/blackfire /tmp/blackfire-probe.tar.gz
 
 COPY install-composer.sh /tmp
 
